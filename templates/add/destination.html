@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Destination - SDC Booking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>ADD NEW DESTINATION</h1>
+        <form method="POST">
+            <input type="text" name="destination_name" placeholder="Destination Name" required>
+            <input type="text" name="destination_hotel" placeholder="Destination Hotel (leave blank if none)">
+            <input type="text" name="destination_city" placeholder="City" required>
+            <input type="text" name="destination_cost" placeholder="Cost" required>
+            <input type="text" name="number_of_days" placeholder="Days" required>
+            <button type="submit">Add to Database</button>
+            <button type="button" onclick="window.location.href='{{ url_for('new_information') }}'">Return to previous</button>
+        </form>
+    </div>
+</body>
+</html>

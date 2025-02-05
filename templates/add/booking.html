@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Booking - SDC Booking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function filterDates() {
+            const destinationId = document.getElementById('destination').value;
+            const tripDates = document.querySelectorAll('.trip-date');
+            let firstAvailableDate = null;
+
+            tripDates.forEach(date => {
+                if (date.dataset.destinationId === destinationId) {
+                    date.style.display = 'block';
+                    if (!firstAvailableDate) {
+                        firstAvailableDate = date;
+                    }
+                } else {
+                    date.style.display = 'none';
+                }
+            });
+
+            if (firstAvailableDate) {
+                firstAvailableDate.selected = true;
+                updateSeatAvailability();
+            }
+        }
+
+        function updateSeatAvailability() {
+            const tripId = document.getElementById('trip_date').value;
+            fetch(`/get_booked_seats?trip_id=${tripId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const seatsAvailable = data.seats_available;
+                    document.getElementById('seats_available').innerText = `Seats Available: ${seatsAvailable}`;
+                });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Add Booking</h1>
+        <form method="POST">
+            <label for="destination">Destination:</label>
+            <select name="destination" id="destination" onchange="filterDates()" required>
+                {% for destination in destinations %}
+                    <option value="{{ destination.destination_id }}">{{ destination.destination_name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="trip_date">Trip Date:</label>
+            <select name="trip_date" id="trip_date" onchange="updateSeatAvailability()" required>
+                {% for trip in trips %}
+                    <option class="trip-date" data-destination-id="{{ trip.destination_id }}" value="{{ trip.trip_id }}" style="display: none;">{{ trip.trip_date }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="customer">Customer:</label>
+            <select name="customer" id="customer" required>
+                {% for customer in customers %}
+                    <option value="{{ customer.customer_id }}">{{ customer.customer_name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="seats_available" id="seats_available">Seats Available: </label>
+            <br>
+            <br>
+            <label for="num_people">Number of Seats:</label>
+            <input type="number" name="num_people" id="num_people" min="1" required>
+
+            <input type="text" name="special_notes" placeholder="Special Notes Here:">
+
+            <button type="submit">Add Booking</button>
+            <button type="button" onclick="window.location.href='{{ url_for('index') }}'">Return to previous</button>
+        </form>
+        {% if success %}
+            <p>Booking added successfully!</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,152 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+}
+
+:-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+:-webkit-scrollbar-thumb {
+    background-color: #8fa5aa;
+    border-radius: 10px;
+}
+
+:-webkit-scrollbar-track {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+}
+
+body {
+    background-color: #7a9299;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    position: relative;
+    background-image: url('SDClogo.png');
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: 200px 200px;
+    padding-top: 210px; /* 200px for the logo height + 10px gap */
+}
+
+.container {
+    width: 98%;
+    max-width: 1500px;
+    background-color: #e0e0e0;
+    border-radius: 35px;
+    padding: 40px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+h1 {
+    color: #000;
+    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+button, input, select, textarea {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #8fa5aa;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+button {
+    background-color: #8fa5aa;
+    color: black;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0;
+}
+
+button:hover {
+    background-color: #708589;
+    transform: scale(1.05);
+}
+
+textarea {
+    resize: vertical;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #8fa5aa;
+    border-radius: 6px;
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #8fa5aa;
+    color: white;
+}
+
+.dropdown-btn:focus + .dropdown-content,
+.dropdown-content:hover {
+    display: block;
+}
+
+.table-container {
+    margin-top: 20px;
+    overflow-y: auto;
+    overflow-x: auto;
+    max-height: 450px;
+    scrollbar-width: thin;
+    scrollbar-color: #8fa5aa #e0e0e0;
+}
+
+.table-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background-color: #8fa5aa;
+    border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background-color: #e0e0e0;
+    border-radius: 10px;
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-container th, .table-container td {
+    border: 1px solid #8fa5aa;
+    padding: 10px;
+    text-align: left;
+}
+
+.table-container th {
+    background-color: #7a9299;
+}
+
+.table-container td {
+    background-color: #f5f5f5;
+}
+

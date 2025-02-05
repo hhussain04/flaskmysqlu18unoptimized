@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Trip - SDC Booking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Trip</h1>
+        <form method="POST">
+            <label for="destination">Destination:</label>
+            <select name="destination" id="destination" required>
+                {% for destination in destinations %}
+                    <option value="{{ destination.destination_id }}">{{ destination.destination_name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="coach">Coach:</label>
+            <select name="coach" id="coach" required>
+                {% for coach in coaches %}
+                    <option value="{{ coach.coach_id }}">{{ coach.coach_registration }} - {{ coach.num_of_seats }} seats</option>
+                {% endfor %}
+            </select>
+
+            <label for="driver">Driver:</label>
+            <select name="driver" id="driver" required>
+                {% for driver in drivers %}
+                    <option value="{{ driver.driver_id }}">{{ driver.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="trip_date">Trip Date:</label>
+            <input type="date" name="trip_date" id="trip_date" required>
+
+            <button type="submit">Add to Database</button>
+            <button type="button" onclick="window.location.href='{{ url_for('new_information') }}'">Return to previous</button>
+        </form>
+        {% if success %}
+            <p>Trip added successfully!</p>
+        {% endif %}
+    </div>
+</body>
+</html>

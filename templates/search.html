@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Database - SDC Booking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function resetColumnSelection() {
+            document.getElementById('column').selectedIndex = 0;
+            document.getElementById('searchForm').submit();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="booking-system">
+            <div class="header">
+                <h1>SEARCH DATABASE</h1>
+            </div>
+            <div class="form-container">
+                <form method="GET" action="{{ url_for('search') }}" id="searchForm">
+                    <class="form-row">
+                        <div class="form-group" style="flex: 1; margin-right: 20px;">
+                            <label for="table">Select Table:</label>
+                            <select name="table" id="table" class="search" onchange="resetColumnSelection()">
+                                <option value="">Select Table</option>
+                                {% for table in tables %}
+                                    <option value="{{ table['Tables_in_silverdawncoaches'] }}" {% if table['Tables_in_silverdawncoaches'] == selected_table %}selected{% endif %}>{{ table['Tables_in_silverdawncoaches'] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1; margin-right: 20px;">
+                            <label for="column">Select Column:</label>
+                            <select name="column" id="column" class="search" onchange="document.getElementById('searchForm').submit()">
+                                <option value="*">All Columns</option>
+                                {% for column in columns %}
+                                    <option value="{{ column }}" {% if column == selected_column %}selected{% endif %}>{{ column }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 2; margin-right: 20px;">
+                            <label for="search">Search for specific data:</label>
+                            <input type="text" name="search" id="search" class="search" placeholder="Search for">
+                        </div>
+                        <div class="form-group" style="flex: 0;">
+                            <label>&nbsp;</label>
+                            <button type="submit" class="search-button">Search</button>
+                        </div>
+                        <div>
+                            <button class="system-btn" type="button" onclick="window.location.href='{{ url_for('index') }}'">Return to Main Menu</button>                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="table-container" style="text-align: center;">
+                <table>
+                    {% if results %}
+                        <tr>
+                            {% if selected_column == '*' %}
+                                {% for column in results[0].keys() %}
+                                    <th>{{ column }}</th>
+                                {% endfor %}
+                            {% else %}
+                                <th>{{ selected_column }}</th>
+                            {% endif %}
+                        </tr>
+                        {% for row in results %}
+                            <tr>
+                                {% if selected_column == '*' %}
+                                    {% for value in row.values() %}
+                                        <td>{{ value }}</td>
+                                    {% endfor %}
+                                {% else %}
+                                    <td>{{ row[selected_column] }}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td>No data found</td>
+                        </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

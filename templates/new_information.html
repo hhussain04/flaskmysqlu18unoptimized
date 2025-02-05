@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Information - SDC Booking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Add New Information</h1>
+        <div class="button-container">
+            <button class="system-btn" onclick="window.location.href='{{ url_for('add_customer') }}'">New Customer</button>
+            <button class="system-btn" onclick="window.location.href='{{ url_for('add_coach') }}'">New Coach</button>
+            <button class="system-btn" onclick="window.location.href='{{ url_for('add_destination') }}'">New Destination</button>
+            <button class="system-btn" onclick="window.location.href='{{ url_for('add_driver') }}'">New Driver</button>
+            <button class="system-btn" onclick="window.location.href='{{ url_for('add_trip') }}'">New Trip</button>
+            <button class="system-btn" onclick="window.location.href='{{ url_for('index') }}'">Return to Main Menu</button>
+        </div>
+    </div>
+</body>
+</html>
