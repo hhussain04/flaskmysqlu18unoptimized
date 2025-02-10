@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers by Postcode - SDC Booking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        function submitForm() {
+            document.getElementById('postcodeForm').submit();
+        }
+
+        function printTableToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("Customers by Postcode", 10, 10);
+            doc.autoTable({ html: '#customers-table' });
+            const postcode = document.getElementById('postcode').value;
+            doc.save(`${postcode} - Customers.pdf`);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Customers by Postcode</h1>
+        <form method="GET" action="{{ url_for('customers_postcode') }}" id="postcodeForm">
+            <label for="postcode">Select Postcode:</label>
+            <select id="postcode" name="postcode" required onchange="submitForm()">
+                <option value="">Select Postcode</option>
+                {% for postcode in postcodes %}
+                    <option value="{{ postcode }}" {% if postcode == selected_postcode %}selected{% endif %}>
+                        {{ postcode }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+        {% if selected_postcode %}
+            <h2>Selected Postcode: {{ selected_postcode }}</h2>
+        {% endif %}
+        <div class="table-container">
+            <table id="customers-table">
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Address Line 1</th>
+                    <th>Address Line 2</th>
+                    <th>City</th>
+                    <th>Postcode</th>
+                </tr>
+                {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.first_name }}</td>
+                        <td>{{ customer.last_name }}</td>
+                        <td>{{ customer.address_line_1 }}</td>
+                        <td>{{ customer.address_line_2 }}</td>
+                        <td>{{ customer.city }}</td>
+                        <td>{{ customer.postcode }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <button class="system-btn" onclick="printTableToPDF()">Print to PDF</button>
+        <button class="system-btn" onclick="window.location.href='{{ url_for('search') }}'">Return to Search</button>
+    </div>
+</body>
+</html>

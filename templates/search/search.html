@@ -20,7 +20,7 @@
             </div>
             <div class="form-container">
                 <form method="GET" action="{{ url_for('search') }}" id="searchForm">
-                    <class="form-row">
+                    <div class="form-row">
                         <div class="form-group" style="flex: 1; margin-right: 20px;">
                             <label for="table">Select Table:</label>
                             <select name="table" id="table" class="search" onchange="resetColumnSelection()">
@@ -48,7 +48,8 @@
                             <button type="submit" class="search-button">Search</button>
                         </div>
                         <div>
-                            <button class="system-btn" type="button" onclick="window.location.href='{{ url_for('index') }}'">Return to Main Menu</button>                        </div>
+                            <button class="system-btn" type="button" onclick="window.location.href='{{ url_for('index') }}'">Return to Main Menu</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -81,6 +82,12 @@
                         </tr>
                     {% endif %}
                 </table>
+            </div>
+            <div class="button-container">
+                <button class="system-btn" onclick="window.location.href='{{ url_for('passengers_trip') }}'">Passengers by Trip</button>
+                <button class="system-btn" onclick="window.location.href='{{ url_for('customers_postcode') }}'">Customers by Postcode</button>
+                <button class="system-btn" onclick="window.location.href='{{ url_for('available_trips') }}'">Available Trips</button>
+                <button class="system-btn" onclick="window.location.href='{{ url_for('trip_income') }}'">Trip Income</button>
             </div>
         </div>
     </div>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passengers by Trip - SDC Booking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        function submitForm() {
+            document.getElementById('tripForm').submit();
+        }
+
+        function printTableToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("Passengers by Trip", 10, 10);
+            doc.autoTable({ html: '#passengers-table' });
+            const tripDate = document.getElementById('tripDate').value;
+            doc.save(`${tripDate} - Passengers.pdf`);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Passengers by Trip</h1>
+        <form method="GET" action="{{ url_for('passengers_trip') }}" id="tripForm">
+            <label for="tripDate">Select Trip Date:</label>
+            <select id="tripDate" name="tripDate" required onchange="submitForm()">
+                <option value="">Select Trip Date</option>
+                {% for trip in trips %}
+                    <option value="{{ trip.trip_date }}" {% if trip.trip_date == selected_trip_date %}selected{% endif %}>
+                        {{ trip.trip_date }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+        {% if selected_trip_date %}
+            <h2>Selected Trip Date: {{ selected_trip_date }}</h2>
+        {% endif %}
+        <div class="table-container">
+            <table id="passengers-table">
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Seat Number</th>
+                </tr>
+                {% for passenger in passengers %}
+                    <tr>
+                        <td>{{ passenger.first_name }}</td>
+                        <td>{{ passenger.last_name }}</td>
+                        <td>{{ passenger.seat_number }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <button class="system-btn" onclick="printTableToPDF()">Print to PDF</button>
+        <button class="system-btn" onclick="window.location.href='{{ url_for('search') }}'">Return to Search</button>
+    </div>
+</body>
+</html>

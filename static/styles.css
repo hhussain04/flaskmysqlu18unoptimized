@@ -67,6 +67,7 @@ button {
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0;
+    text-color: white;
 }
 
 button:hover {
@@ -106,6 +107,8 @@ textarea {
 .dropdown-content:hover {
     display: block;
 }
+
+/* ...existing code... */
 
 .table-container {
     margin-top: 20px;
@@ -149,4 +152,3 @@ textarea {
 .table-container td {
     background-color: #f5f5f5;
 }
-

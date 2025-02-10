@@ -79,7 +79,6 @@ def add_customer():
     return render_template('add/customer.html')
 
 @app.route('/add_trip', methods=['GET', 'POST'])
-
 def add_trip():
     """
     Handles the addition of a new trip.
@@ -119,7 +118,6 @@ def add_trip():
     return render_template('add/trip.html', destinations=destinations, coaches=coaches, drivers=drivers)
 
 @app.route('/add_destination', methods=['GET', 'POST'])
-
 def add_destination():
     """
     Handles the addition of a new destination.
@@ -151,7 +149,6 @@ def add_destination():
     return render_template('add/destination.html')
 
 @app.route('/add_driver', methods=['GET', 'POST'])
-
 def add_driver():
     """
     Handles the addition of a new driver.
@@ -176,7 +173,6 @@ def add_driver():
     return render_template('add/driver.html')
 
 @app.route('/add_coach', methods=['GET', 'POST'])
-
 def add_coach():
     """
     Handles the addition of a new coach.
@@ -255,9 +251,82 @@ def search():
         print(f"Query: {query}")
         print(f"Results: {results}")
 
-    return render_template('search.html', tables=tables, columns=columns, 
+    return render_template('search/search.html', tables=tables, columns=columns, 
                            results=results, selected_table=selected_table, 
                            selected_column=selected_column)
+
+@app.route('/passengers_trip', methods=['GET', 'POST'])
+def passengers_trip():
+    passengers = []
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('''
+        SELECT trip.trip_id, destination.destination_name, trip.trip_date
+        FROM trip
+        JOIN destination ON trip.destination_id = destination.destination_id
+    ''')
+    trips = cursor.fetchall()
+    selected_trip = request.args.get('trip')
+    if selected_trip:
+        query = '''
+            SELECT customer.first_name, customer.last_name, customer.email, customer.phone_number
+            FROM booking
+            JOIN trip ON booking.trip_id = trip.trip_id
+            JOIN customer ON booking.customer_id = customer.customer_id
+            WHERE trip.trip_id = %s
+        '''
+        cursor.execute(query, (selected_trip,))
+        passengers = cursor.fetchall()
+    cursor.close()
+    return render_template('search/passengers_trip.html', passengers=passengers, trips=trips, selected_trip=selected_trip)
+
+@app.route('/customers_postcode', methods=['GET', 'POST'])
+def customers_postcode():
+    customers = []
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT DISTINCT LEFT(postcode, 3) AS postcode FROM customer')
+    postcodes = [row['postcode'] for row in cursor.fetchall()]
+    selected_postcode = request.args.get('postcode')
+    if selected_postcode:
+        query = '''
+            SELECT first_name, last_name, address_line_1, address_line_2, city, postcode
+            FROM customer
+            WHERE postcode LIKE %s
+        '''
+        cursor.execute(query, (selected_postcode + '%',))
+        customers = cursor.fetchall()
+    cursor.close()
+    return render_template('search/customers_postcode.html', customers=customers, postcodes=postcodes, selected_postcode=selected_postcode)
+@app.route('/available_trips')
+def available_trips():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    query = '''
+        SELECT trip.trip_date, destination.destination_name, coach.coach_registration, driver.driver_first_name, driver.driver_last_name
+        FROM trip
+        JOIN destination ON trip.destination_id = destination.destination_id
+        JOIN coach ON trip.coach_id = coach.coach_id
+        JOIN driver ON trip.driver_id = driver.driver_id
+        WHERE trip.trip_date >= CURDATE()
+        ORDER BY trip.trip_date DESC
+    '''
+    cursor.execute(query)
+    trips = cursor.fetchall()
+    cursor.close()
+    return render_template('search/available_trips.html', trips=trips)
+
+@app.route('/trip_income')
+def trip_income():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    query = '''
+        SELECT trip.trip_date, destination.destination_name, SUM(booking.booking_cost) AS total_income
+        FROM booking
+        JOIN trip ON booking.trip_id = trip.trip_id
+        JOIN destination ON trip.destination_id = destination.destination_id
+        GROUP BY trip.trip_id
+    '''
+    cursor.execute(query)
+    incomes = cursor.fetchall()
+    cursor.close()
+    return render_template('search/trip_income.html', incomes=incomes)
 
 @app.route('/add_booking', methods=['GET', 'POST'])
 def add_booking():

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Income - SDC Booking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Trip Income</h1>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Trip Date</th>
+                    <th>Destination</th>
+                    <th>Total Income</th>
+                </tr>
+                {% for income in incomes %}
+                    <tr>
+                        <td>{{ income.trip_date }}</td>
+                        <td>{{ income.destination_name }}</td>
+                        <td>£{{ income.total_income }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <button class="system-btn" onclick="window.location.href='{{ url_for('search') }}'">Return to Search</button>
+    </div>
+</body>
+</html>

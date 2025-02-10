@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Trips - SDC Booking System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        function printTableToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("Available Trips", 10, 10);
+            doc.autoTable({ html: '#trips-table' });
+            const date = new Date().toISOString().split('T')[0];
+            doc.save(`${date} - Available Trips.pdf`);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Available Trips</h1>
+        <div class="table-container">
+            <table id="trips-table">
+                <tr>
+                    <th>Trip Date</th>
+                    <th>Destination</th>
+                    <th>Coach Registration</th>
+                    <th>Driver First Name</th>
+                    <th>Driver Last Name</th>
+                </tr>
+                {% for trip in trips %}
+                    <tr>
+                        <td>{{ trip.trip_date }}</td>
+                        <td>{{ trip.destination_name }}</td>
+                        <td>{{ trip.coach_registration }}</td>
+                        <td>{{ trip.driver_first_name }}</td>
+                        <td>{{ trip.driver_last_name }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <button class="system-btn" onclick="printTableToPDF()">Print to PDF</button>
+        <button class="system-btn" onclick="window.location.href='{{ url_for('search') }}'">Return to Search</button>
+    </div>
+</body>
+</html>
