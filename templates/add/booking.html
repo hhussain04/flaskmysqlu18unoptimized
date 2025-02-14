@@ -44,21 +44,21 @@
         <h1>Add Booking</h1>
         <form method="POST">
             <label for="destination">Destination:</label>
-            <select name="destination" id="destination" onchange="filterDates()" required>
+            <select name="destination" id="destination" onchange="filterDates()" >
                 {% for destination in destinations %}
                     <option value="{{ destination.destination_id }}">{{ destination.destination_name }}</option>
                 {% endfor %}
             </select>
 
             <label for="trip_date">Trip Date:</label>
-            <select name="trip_date" id="trip_date" onchange="updateSeatAvailability()" required>
+            <select name="trip_date" id="trip_date" onchange="updateSeatAvailability()" >
                 {% for trip in trips %}
                     <option class="trip-date" data-destination-id="{{ trip.destination_id }}" value="{{ trip.trip_id }}" style="display: none;">{{ trip.trip_date }}</option>
                 {% endfor %}
             </select>
 
             <label for="customer">Customer:</label>
-            <select name="customer" id="customer" required>
+            <select name="customer" id="customer" >
                 {% for customer in customers %}
                     <option value="{{ customer.customer_id }}">{{ customer.customer_name }}</option>
                 {% endfor %}
@@ -68,7 +68,7 @@
             <br>
             <br>
             <label for="num_people">Number of Seats:</label>
-            <input type="number" name="num_people" id="num_people" min="1" required>
+            <input type="number" name="num_people" id="num_people" min="1" >
 
             <input type="text" name="special_notes" placeholder="Special Notes Here:">
 

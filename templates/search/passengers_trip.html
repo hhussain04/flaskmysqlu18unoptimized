@@ -26,18 +26,18 @@
     <div class="container">
         <h1>Passengers by Trip</h1>
         <form method="GET" action="{{ url_for('passengers_trip') }}" id="tripForm">
-            <label for="tripDate">Select Trip Date:</label>
-            <select id="tripDate" name="tripDate" required onchange="submitForm()">
-                <option value="">Select Trip Date</option>
+            <label for="trip">Select Trip:</label>
+            <select id="trip" name="trip" required onchange="submitForm()">
+                <option value="">Select Trip</option>
                 {% for trip in trips %}
-                    <option value="{{ trip.trip_date }}" {% if trip.trip_date == selected_trip_date %}selected{% endif %}>
-                        {{ trip.trip_date }}
+                    <option value="{{ trip.trip_id }}" {% if trip.trip_id == selected_trip %}selected{% endif %}>
+                        {{ trip.trip_date }} - {{ trip.destination_name }}
                     </option>
                 {% endfor %}
             </select>
         </form>
-        {% if selected_trip_date %}
-            <h2>Selected Trip Date: {{ selected_trip_date }}</h2>
+        {% if selected_trip %}
+            <h2>Selected Trip: {{ selected_trip.trip_date }} - {{ selected_trip.destination_name }}</h2>
         {% endif %}
         <div class="table-container">
             <table id="passengers-table">

@@ -268,7 +268,7 @@ def passengers_trip():
     selected_trip = request.args.get('trip')
     if selected_trip:
         query = '''
-            SELECT customer.first_name, customer.last_name, customer.email, customer.phone_number
+            SELECT customer.first_name, customer.last_name, booking.num_of_people
             FROM booking
             JOIN trip ON booking.trip_id = trip.trip_id
             JOIN customer ON booking.customer_id = customer.customer_id
@@ -296,6 +296,7 @@ def customers_postcode():
         customers = cursor.fetchall()
     cursor.close()
     return render_template('search/customers_postcode.html', customers=customers, postcodes=postcodes, selected_postcode=selected_postcode)
+
 @app.route('/available_trips')
 def available_trips():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)

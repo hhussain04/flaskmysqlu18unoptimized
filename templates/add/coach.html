@@ -10,8 +10,8 @@
     <div class="container">
         <h1>New Coach</h1>
         <form method="POST">
-            <input type="text" name="reg_number" placeholder="Registration Number" required>
-            <input type="number" name="seating_capacity" placeholder="Seating Capacity" required>
+            <input type="text" name="reg_number" placeholder="Registration Number" >
+            <input type="number" name="seating_capacity" placeholder="Seating Capacity" >
             <button type="submit">Add to Database</button>
             <button type="button" onclick="window.location.href='{{ url_for('new_information') }}'">Return to previous</button>
         </form>
