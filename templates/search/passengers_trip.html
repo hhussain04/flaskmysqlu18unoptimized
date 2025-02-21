@@ -15,17 +15,18 @@
         function printTableToPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.text("Passengers by Trip", 10, 10);
-            doc.autoTable({ html: '#passengers-table' });
             const tripDate = document.getElementById('tripDate').value;
-            doc.save(`${tripDate} - Passengers.pdf`);
+            const tripName = document.getElementById('trip').options[document.getElementById('trip').selectedIndex].text;
+            doc.text(`Passengers by Trip - ${tripDate} - ${tripName}`, 10, 10);
+            doc.autoTable({ html: '#passengers-table' });
+            doc.save(`${tripDate} - ${tripName} - Passengers.pdf`);
         }
     </script>
 </head>
 <body>
     <div class="container">
         <h1>Passengers by Trip</h1>
-        <form method="GET" action="{{ url_for('passengers_trip') }}" id="tripForm">
+        <form method="GET" action="{{ url_for('customer_trip') }}" id="tripForm">
             <label for="trip">Select Trip:</label>
             <select id="trip" name="trip" required onchange="submitForm()">
                 <option value="">Select Trip</option>
@@ -35,22 +36,27 @@
                     </option>
                 {% endfor %}
             </select>
+            <input type="hidden" id="tripDate" name="tripDate" value="{{ selected_trip.trip_date }}">
         </form>
         {% if selected_trip %}
-            <h2>Selected Trip: {{ selected_trip.trip_date }} - {{ selected_trip.destination_name }}</h2>
+            {% if selected_trip %}
+                <h2>Selected Trip: {{ selected_trip.trip_date }} - {{ selected_trip.destination_name }}</h2>
+            {% else %}
+                <h2>No trip selected</h2>
+            {% endif %}
         {% endif %}
         <div class="table-container">
             <table id="passengers-table">
                 <tr>
                     <th>First Name</th>
                     <th>Last Name</th>
-                    <th>Seat Number</th>
+                    <th>Amount of Seats</th>
                 </tr>
-                {% for passenger in passengers %}
+                {% for customer in customers %}
                     <tr>
-                        <td>{{ passenger.first_name }}</td>
-                        <td>{{ passenger.last_name }}</td>
-                        <td>{{ passenger.seat_number }}</td>
+                        <td>{{ customer.first_name }}</td>
+                        <td>{{ customer.last_name }}</td>
+                        <td>{{ customer.num_of_people }}</td>
                     </tr>
                 {% endfor %}
             </table>

@@ -68,7 +68,7 @@ def add_customer():
 
         # Insert data into the database
         cursor = mysql.connection.cursor()
-        cursor.execute('''INSERT INTO customer (first_name, last_name, email, address_line_1, address_line_2, city, postcode, phone_number, special_notes)
+        cursor.execute('''INSERT INTO customer (first_name, last_name, email, address_line1, address_line2, city, postcode, phone_num, special_notes)
                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)''',  
                        (first_name, last_name, email, address_line_1, address_line_2, city, postcode, phone_number, special_notes))
         mysql.connection.commit()
@@ -109,7 +109,7 @@ def add_trip():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT destination_id, destination_name FROM destination')
     destinations = cursor.fetchall()
-    cursor.execute('SELECT coach_id, coach_registration, num_of_seats FROM coach')
+    cursor.execute('SELECT coach_id, reg_number, num_of_seats FROM coach')
     coaches = cursor.fetchall()
     cursor.execute('SELECT driver_id, CONCAT(driver_first_name, " ", driver_last_name) AS name FROM driver')
     drivers = cursor.fetchall()
@@ -135,8 +135,8 @@ def add_destination():
 
             # Insert data into the database
             cursor = mysql.connection.cursor()
-            cursor.execute('''INSERT INTO destination (destination_name, destination_hotel, destination_city,
-                           destination_cost, number_of_days)
+            cursor.execute('''INSERT INTO destination (destination_name, destination_hotel, city_name,
+                           destination_cost, days)
                               VALUES (%s, %s, %s, %s, %s)''',
                            (destination_name, destination_hotel, destination_city, destination_cost, number_of_days))
             mysql.connection.commit()
@@ -186,7 +186,7 @@ def add_coach():
         
         # Insert data into the database
         cursor = mysql.connection.cursor()
-        cursor.execute('''INSERT INTO coach (coach_registration, num_of_seats)
+        cursor.execute('''INSERT INTO coach (reg_number, num_of_seats)
                           VALUES (%s, %s)''',
                        (reg_number, num_of_seats))
         mysql.connection.commit()
@@ -255,9 +255,9 @@ def search():
                            results=results, selected_table=selected_table, 
                            selected_column=selected_column)
 
-@app.route('/passengers_trip', methods=['GET', 'POST'])
-def passengers_trip():
-    passengers = []
+@app.route('/customer_trip', methods=['GET', 'POST'])
+def customer_trip():
+    customers = []
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('''
         SELECT trip.trip_id, destination.destination_name, trip.trip_date
@@ -275,9 +275,9 @@ def passengers_trip():
             WHERE trip.trip_id = %s
         '''
         cursor.execute(query, (selected_trip,))
-        passengers = cursor.fetchall()
+        customers = cursor.fetchall()
     cursor.close()
-    return render_template('search/passengers_trip.html', passengers=passengers, trips=trips, selected_trip=selected_trip)
+    return render_template('search/passengers_trip.html', customers=customers, trips=trips, selected_trip=selected_trip)
 
 @app.route('/customers_postcode', methods=['GET', 'POST'])
 def customers_postcode():
@@ -288,7 +288,7 @@ def customers_postcode():
     selected_postcode = request.args.get('postcode')
     if selected_postcode:
         query = '''
-            SELECT first_name, last_name, address_line_1, address_line_2, city, postcode
+            SELECT first_name, last_name, address_line1, address_line2, city, postcode
             FROM customer
             WHERE postcode LIKE %s
         '''
@@ -301,7 +301,7 @@ def customers_postcode():
 def available_trips():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     query = '''
-        SELECT trip.trip_date, destination.destination_name, coach.coach_registration, driver.driver_first_name, driver.driver_last_name
+        SELECT trip.trip_date, destination.destination_name, coach.reg_number, driver.driver_first_name, driver.driver_last_name
         FROM trip
         JOIN destination ON trip.destination_id = destination.destination_id
         JOIN coach ON trip.coach_id = coach.coach_id
@@ -361,6 +361,7 @@ def add_booking():
         customer_id = request.form['customer']
         special_notes = request.form.get('special_notes', '')
         num_people = int(request.form['num_people'])
+        wheelchair_required = 1 if 'wheelchair_required' in request.form else 0
 
         # Calculate booking cost
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -375,9 +376,9 @@ def add_booking():
         # Insert booking
         try:
             cursor.execute('''INSERT INTO booking 
-                            (trip_id, num_of_people, customer_id, booking_cost, special_request, booking_date)
-                            VALUES (%s, %s, %s, %s, %s, %s)''',
-                           (trip_id, num_people, customer_id, booking_cost, special_notes, booking_date))
+                            (trip_id, num_of_people, customer_id, booking_cost, special_request, booking_date, wheelchair_required)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s)''',
+                           (trip_id, num_people, customer_id, booking_cost, special_notes, booking_date, wheelchair_required))
             mysql.connection.commit()
             success = True
         except Exception as e:
@@ -397,7 +398,6 @@ def add_booking():
                            customers=customers,
                            destinations=destinations,
                            trips=trips)
-
 
 @app.route('/get_booked_seats')
 def get_booked_seats():
